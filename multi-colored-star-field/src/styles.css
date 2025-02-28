@@ -1,0 +1,46 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    background-color: black;
+}
+
+canvas {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.star {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.star-twinkle {
+    animation: twinkle 1.5s infinite alternate;
+}
+
+.rainbow-star {
+    animation: rainbow 5s infinite linear;
+}
+
+@keyframes twinkle {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.5;
+    }
+}
+
+@keyframes rainbow {
+    0% { background-color: red; }
+    14% { background-color: orange; }
+    28% { background-color: yellow; }
+    42% { background-color: green; }
+    57% { background-color: blue; }
+    71% { background-color: indigo; }
+    85% { background-color: violet; }
+    100% { background-color: red; }
+}
