@@ -1,0 +1,35 @@
+name: Auto Commit
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  auto-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16' # Update to the Node.js version required by Payload CMS
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Turbopack
+        run: npm install --save-dev @turbo/pack
+
+      - name: Run build
+        run: npm run build
+
+      - name: Commit changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add .
+          git commit -m 'Automated commit by GitHub Actions' || echo "No changes to commit"
+          git push

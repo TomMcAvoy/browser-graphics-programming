@@ -1,21 +1,32 @@
 {
   "name": "multi-colored-star-field",
-  "version": "1.0.0",
-  "description": "A client-side graphics programming project that implements a multi-colored star field with the Doctor Who effect using Web Workers.",
-  "main": "src/main.js",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "start": "webpack serve --mode development",
-    "build": "webpack --mode production"
+    "dev": "next dev --turbo",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
-    "webpack": "^5.0.0",
-    "webpack-cli": "^4.0.0",
-    "webpack-dev-server": "^3.0.0"
+    "next": "15.2.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "html-webpack-plugin": "^5.0.0",
-    "css-loader": "^5.0.0",
-    "style-loader": "^2.0.0"
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.2.0",
+    "tailwindcss": "^4",
+    "typescript": "^5"
   },
-  "license": "MIT"
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "sharp"
+    ]
+  }
 }
