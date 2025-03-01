@@ -7,13 +7,12 @@
     "start": "webpack serve --mode development",
     "build": "webpack --mode production",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "turbo dev"
+    "dev": "webpack serve --mode development"
   },
   "dependencies": {
     "webpack": "^5.0.0",
     "webpack-cli": "^4.0.0",
-    "webpack-dev-server": "^3.0.0",
-    "turbopack": "0.0.1"
+    "webpack-dev-server": "^3.0.0"
   },
   "devDependencies": {
     "css-loader": "^5.0.0",
