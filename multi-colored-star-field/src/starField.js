@@ -14,12 +14,19 @@ export function initializeStarField() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 
+  // Calculate the maximum distance from the center to the corners of the canvas
+  const maxDistance = Math.sqrt((canvas.width / 2) ** 2 + (canvas.height / 2) ** 2);
+
+  // Load the TARDIS image
+  const tardisImage = new Image();
+  tardisImage.src = '/tardis.png';
+
   // Pre-calculate star positions for each layer
   for (let i = 0; i < layers; i++) {
     const layerStars = [];
     for (let j = 0; j < numStars; j++) {
       const angle = Math.random() * Math.PI * 2;
-      const distance = Math.random() * (canvas.width / 2);
+      const distance = Math.random() * maxDistance;
       layerStars.push({
         x: centerX + Math.cos(angle) * distance,
         y: centerY + Math.sin(angle) * distance,
@@ -36,7 +43,7 @@ export function initializeStarField() {
   // Pre-calculate nebula positions
   for (let i = 0; i < 5; i++) {
     const angle = Math.random() * Math.PI * 2;
-    const distance = Math.random() * (canvas.width / 2) + canvas.width / 2;
+    const distance = Math.random() * maxDistance + maxDistance;
     nebulas.push({
       x: centerX + Math.cos(angle) * distance,
       y: centerY + Math.sin(angle) * distance,
@@ -72,6 +79,15 @@ export function initializeStarField() {
     context.restore();
   }
 
+  function drawTardis(context, image, x, y, scale, rotation) {
+    context.save();
+    context.translate(x, y);
+    context.rotate(rotation);
+    context.translate(-image.width / 2 * scale, -image.height / 2 * scale);
+    context.drawImage(image, 0, 0, image.width * scale, image.height * scale);
+    context.restore();
+  }
+
   function animate(audioContext, audioBuffer, startTime) {
     const currentTime = audioContext ? audioContext.currentTime - startTime : 0;
     const frequency = Math.sin(currentTime * 2 * Math.PI * 0.5); // Adjust frequency to match the tune
@@ -92,14 +108,14 @@ export function initializeStarField() {
     stars.forEach((layerStars, layerIndex) => {
       layerStars.forEach((star) => {
         const distanceFromCenter = Math.sqrt((star.x - centerX) ** 2 + (star.y - centerY) ** 2);
-        const speedFactor = burst ? Math.min(distanceFromCenter / (canvas.width / 2), 1) : 1;
+        const speedFactor = burst ? Math.min(distanceFromCenter / maxDistance, 1) : 1;
 
         star.x += Math.cos(star.angle) * star.speed * speedFactor * frequency;
         star.y += Math.sin(star.angle) * star.speed * speedFactor * frequency;
 
         if (star.x < 0 || star.x > canvas.width || star.y < 0 || star.y > canvas.height) {
           const angle = Math.random() * Math.PI * 2;
-          const distance = Math.random() * (canvas.width / 2);
+          const distance = Math.random() * maxDistance;
           star.x = centerX + Math.cos(angle) * distance;
           star.y = centerY + Math.sin(angle) * distance;
           star.speed = (Math.random() * 2 + 0.5) * (layerIndex + 1); // Adjust emission speed
@@ -120,6 +136,11 @@ export function initializeStarField() {
         context.fill();
       });
     });
+
+    // Draw TARDIS
+    const tardisScale = 0.5 + 0.5 * Math.sin(currentTime * 0.5); // Scale TARDIS in and out
+    const tardisRotation = currentTime * 0.5; // Rotate TARDIS
+    drawTardis(context, tardisImage, centerX, centerY, tardisScale, tardisRotation);
 
     context.restore();
     rotationAngle += 0.2 * frequency; // Increase rotation speed
@@ -150,12 +171,33 @@ export function initializeStarField() {
       .then(response => response.arrayBuffer())
       .then(data => audioContext.decodeAudioData(data))
       .then(audioBuffer => {
-        const source = audioContext.createBufferSource();
-        source.buffer = audioBuffer;
-        source.connect(audioContext.destination);
-        source.start(0);
-        const startTime = audioContext.currentTime;
-        animate(audioContext, audioBuffer, startTime);
+        const playAudio = () => {
+          const source = audioContext.createBufferSource();
+          source.buffer = audioBuffer;
+          source.connect(audioContext.destination);
+
+          // Resume the AudioContext after a user gesture
+          const resumeAudioContext = () => {
+            if (audioContext.state === 'suspended') {
+              audioContext.resume().then(() => {
+                source.start(0);
+                const startTime = audioContext.currentTime;
+                animate(audioContext, audioBuffer, startTime);
+              });
+            } else {
+              source.start(0);
+              const startTime = audioContext.currentTime;
+              animate(audioContext, audioBuffer, startTime);
+            }
+          };
+
+          source.onended = playAudio; // Restart the audio when it ends
+
+          document.addEventListener('click', resumeAudioContext, { once: true });
+          document.addEventListener('touchstart', resumeAudioContext, { once: true });
+        };
+
+        playAudio();
       })
       .catch(error => {
         console.error('Error loading audio file:', error);
