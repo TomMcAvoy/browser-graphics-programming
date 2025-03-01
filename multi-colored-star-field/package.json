@@ -4,23 +4,25 @@
   "description": "A client-side graphics programming project that implements a multi-colored star field with the Doctor Who effect using Web Workers.",
   "main": "src/index.js",
   "scripts": {
-    "start": "webpack serve --mode development",
-    "build": "webpack --mode production",
+    "start": "next start",
+    "build": "next build",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack serve --mode development"
+    "dev": "next dev --turbo"
   },
   "dependencies": {
-    "webpack": "^5.0.0",
-    "webpack-cli": "^4.0.0",
-    "webpack-dev-server": "^3.0.0"
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest"
   },
   "devDependencies": {
+    "@babel/core": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@types/node": "22.13.7",
+    "@types/react": "19.0.10",
+    "babel-loader": "^8.0.0",
     "css-loader": "^5.0.0",
     "html-webpack-plugin": "^5.0.0",
-    "style-loader": "^2.0.0",
-    "babel-loader": "^8.0.0",
-    "@babel/core": "^7.0.0",
-    "@babel/preset-env": "^7.0.0"
+    "style-loader": "^2.0.0"
   },
   "license": "MIT",
   "packageManager": "pnpm@10.5.2+sha512.da9dc28cd3ff40d0592188235ab25d3202add8a207afbedc682220e4a0029ffbff4562102b9e6e46b4e3f9e8bd53e6d05de48544b0c57d4b0179e22c76d1199b",
@@ -29,7 +31,8 @@
       "fsevents"
     ],
     "onlyBuiltDependencies": [
-      "fsevents"
+      "fsevents",
+      "sharp"
     ]
   }
 }

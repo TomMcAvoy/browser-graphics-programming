@@ -146,7 +146,7 @@ export function initializeStarField() {
 
   function startAudio() {
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    fetch('/doctor-who-theme.mp3') // Update path to the MP3 file
+    fetch('/doctor-who-theme.mp3') // Ensure the path to the MP3 file is correct
       .then(response => response.arrayBuffer())
       .then(data => audioContext.decodeAudioData(data))
       .then(audioBuffer => {
