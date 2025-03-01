@@ -73,7 +73,7 @@ export function initializeStarField() {
   }
 
   function animate(audioContext, audioBuffer, startTime) {
-    const currentTime = audioContext.currentTime - startTime;
+    const currentTime = audioContext ? audioContext.currentTime - startTime : 0;
     const frequency = Math.sin(currentTime * 2 * Math.PI * 0.5); // Adjust frequency to match the tune
 
     context.clearRect(0, 0, canvas.width, canvas.height);
@@ -122,10 +122,10 @@ export function initializeStarField() {
     });
 
     context.restore();
-    rotationAngle += 0.1 * frequency; // Sync rotation speed with frequency
+    rotationAngle += 0.2 * frequency; // Increase rotation speed
 
     // Update center position to move in a circular path
-    centerAngle += 0.01 * frequency; // Sync center movement speed with frequency
+    centerAngle += 0.02 * frequency; // Increase center movement speed
     const radius = canvas.width * 0.1; // 10% of the screen width
     centerX = canvas.width / 2 + Math.cos(centerAngle) * radius;
     centerY = canvas.height / 2 + Math.sin(centerAngle) * radius;
@@ -156,6 +156,11 @@ export function initializeStarField() {
         source.start(0);
         const startTime = audioContext.currentTime;
         animate(audioContext, audioBuffer, startTime);
+      })
+      .catch(error => {
+        console.error('Error loading audio file:', error);
+        // Start animation without audio
+        animate(null, null, 0);
       });
   }
 
