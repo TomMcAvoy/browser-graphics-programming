@@ -1,11 +1,14 @@
-import React from 'react';
-import StarField from '../components/StarField';
+import React, { useEffect } from 'react';
+import { initializeStarField } from '../src/starField';
 
-const Home = () => {
+const Home: React.FC = () => {
+  useEffect(() => {
+    initializeStarField();
+  }, []);
+
   return (
     <div>
-      <h1>Multi-Colored Star Field</h1>
-      <StarField />
+      <canvas id="star-field"></canvas>
     </div>
   );
 };

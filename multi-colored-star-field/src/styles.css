@@ -16,7 +16,7 @@ canvas {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 1; /* Ensure the canvas is below the GIF */
+  z-index: 1;
 }
 
 .star {
