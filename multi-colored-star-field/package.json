@@ -23,5 +23,9 @@
     "onlyBuiltDependencies": [
       "fsevents"
     ]
+  },
+  "devDependencies": {
+    "@types/node": "22.13.9",
+    "@types/react": "19.0.10"
   }
 }
