@@ -2,7 +2,7 @@
   "name": "multi-colored-star-field",
   "version": "1.0.0",
   "description": "A client-side graphics programming project that implements a multi-colored star field with the Doctor Who effect using Web Workers.",
-  "main": "src/index.js",
+  "main": "src/index.ts",
   "scripts": {
     "dev": "next dev --turbo",
     "build": "next build",
