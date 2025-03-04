@@ -17,10 +17,6 @@ export function initializeStarField() {
   // Calculate the maximum distance from the center to the corners of the canvas
   const maxDistance = Math.sqrt((canvas.width / 2) ** 2 + (canvas.height / 2) ** 2);
 
-  // Load the TARDIS image
-  const tardisImage = new Image();
-  tardisImage.src = '/tardis.png';
-
   // Pre-calculate star positions for each layer
   for (let i = 0; i < layers; i++) {
     const layerStars = [];
@@ -79,15 +75,6 @@ export function initializeStarField() {
     context.restore();
   }
 
-  function drawTardis(context, image, x, y, scale, rotation) {
-    context.save();
-    context.translate(x, y);
-    context.rotate(rotation);
-    context.translate(-image.width / 2 * scale, -image.height / 2 * scale);
-    context.drawImage(image, 0, 0, image.width * scale, image.height * scale);
-    context.restore();
-  }
-
   function animate(audioContext, audioBuffer, startTime) {
     const currentTime = audioContext ? audioContext.currentTime - startTime : 0;
     const frequency = Math.sin(currentTime * 2 * Math.PI * 0.5); // Adjust frequency to match the tune
@@ -136,11 +123,6 @@ export function initializeStarField() {
         context.fill();
       });
     });
-
-    // Draw TARDIS
-    const tardisScale = 0.5 + 0.5 * Math.sin(currentTime * 0.5); // Scale TARDIS in and out
-    const tardisRotation = currentTime * 0.5; // Rotate TARDIS
-    drawTardis(context, tardisImage, centerX, centerY, tardisScale, tardisRotation);
 
     context.restore();
     rotationAngle += 0.2 * frequency; // Increase rotation speed
