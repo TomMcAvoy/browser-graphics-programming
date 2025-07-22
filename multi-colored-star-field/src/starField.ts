@@ -1,10 +1,40 @@
+// Type definitions
+interface Star {
+  x: number;
+  y: number;
+  radius: number;
+  color: string;
+  speed: number;
+  angle: number;
+  opacity: number;
+}
+
+interface Nebula {
+  x: number;
+  y: number;
+  radius: number;
+  color: string;
+  rotation: number;
+  rotationSpeed: number;
+}
+
 export function initializeStarField() {
   const canvas = document.getElementById('star-field') as HTMLCanvasElement;
+  if (!canvas) {
+    console.error('Canvas element with id "star-field" not found');
+    return;
+  }
+  
   const context = canvas.getContext('2d');
+  if (!context) {
+    console.error('Could not get 2D rendering context');
+    return;
+  }
+  
   const numStars = 100;
   const layers = 10;
-  const stars = [];
-  const nebulas = [];
+  const stars: Star[][] = [];
+  const nebulas: Nebula[] = [];
   let rotationAngle = 0;
   let burst = false;
   let centerX = canvas.width / 2;
@@ -19,7 +49,7 @@ export function initializeStarField() {
 
   // Pre-calculate star positions for each layer
   for (let i = 0; i < layers; i++) {
-    const layerStars = [];
+    const layerStars: Star[] = [];
     for (let j = 0; j < numStars; j++) {
       const angle = Math.random() * Math.PI * 2;
       const distance = Math.random() * maxDistance;
@@ -50,8 +80,8 @@ export function initializeStarField() {
     });
   }
 
-  function drawNebula(context: CanvasRenderingContext2D, nebula: any) {
-    const gradient = context.createRadialGradient(
+  function drawNebula(ctx: CanvasRenderingContext2D, nebula: Nebula) {
+    const gradient = ctx.createRadialGradient(
       nebula.x,
       nebula.y,
       nebula.radius / 2,
@@ -62,20 +92,23 @@ export function initializeStarField() {
     gradient.addColorStop(0, nebula.color);
     gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
 
-    context.save();
-    context.translate(nebula.x, nebula.y);
-    context.rotate(nebula.rotation);
-    context.translate(-nebula.x, -nebula.y);
+    ctx.save();
+    ctx.translate(nebula.x, nebula.y);
+    ctx.rotate(nebula.rotation);
+    ctx.translate(-nebula.x, -nebula.y);
 
-    context.beginPath();
-    context.arc(nebula.x, nebula.y, nebula.radius, 0, Math.PI * 2);
-    context.fillStyle = gradient;
-    context.fill();
+    ctx.beginPath();
+    ctx.arc(nebula.x, nebula.y, nebula.radius, 0, Math.PI * 2);
+    ctx.fillStyle = gradient;
+    ctx.fill();
 
-    context.restore();
+    ctx.restore();
   }
 
   function animate(audioContext: AudioContext | null, audioBuffer: AudioBuffer | null, startTime: number) {
+    // Early return if context is null
+    if (!context) return;
+    
     const currentTime = audioContext ? audioContext.currentTime - startTime : 0;
     const frequency = Math.sin(currentTime * 2 * Math.PI * 0.5); // Adjust frequency to match the tune
 
@@ -87,7 +120,7 @@ export function initializeStarField() {
 
     // Draw nebulas
     nebulas.forEach((nebula) => {
-      drawNebula(context, nebula);
+      drawNebula(context!, nebula);
       nebula.rotation += nebula.rotationSpeed * frequency; // Sync rotation with frequency
     });
 
@@ -114,13 +147,13 @@ export function initializeStarField() {
           star.color = 'black';
         }
 
-        context.beginPath();
-        context.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-        context.fillStyle = star.color;
-        context.globalAlpha = star.opacity;
-        context.shadowBlur = 5;
-        context.shadowColor = star.color;
-        context.fill();
+        context!.beginPath();
+        context!.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        context!.fillStyle = star.color;
+        context!.globalAlpha = star.opacity;
+        context!.shadowBlur = 5;
+        context!.shadowColor = star.color;
+        context!.fill();
       });
     });
 
@@ -138,7 +171,9 @@ export function initializeStarField() {
 
   function revolveLayers() {
     const firstLayer = stars.shift();
-    stars.push(firstLayer);
+    if (firstLayer) {
+      stars.push(firstLayer);
+    }
     setTimeout(revolveLayers, 5000); // Adjust interval as needed
   }
 
@@ -148,7 +183,14 @@ export function initializeStarField() {
   }
 
   function startAudio() {
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    // Modern browsers only support AudioContext, not webkitAudioContext
+    const AudioContextClass = window.AudioContext || (window as typeof globalThis & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+    if (!AudioContextClass) {
+      console.warn('AudioContext not supported, starting animation without audio');
+      animate(null, null, 0);
+      return;
+    }
+    const audioContext = new AudioContextClass();
     fetch('/doctor-who-theme.mp3') // Ensure the path to the MP3 file is correct
       .then(response => response.arrayBuffer())
       .then(data => audioContext.decodeAudioData(data))

@@ -1,0 +1,45 @@
+{
+  "name": "browser-graphics-programming",
+  "version": "1.0.0",
+  "description": "A collection of client-side graphics programming projects and techniques",
+  "private": true,
+  "scripts": {
+    "start": "./scripts/startup.sh",
+    "stop": "./scripts/shutdown.sh",
+    "status": "./scripts/status.sh",
+    "dev": "cd multi-colored-star-field && pnpm run dev",
+    "build": "cd multi-colored-star-field && pnpm run build",
+    "install:all": "pnpm install && cd multi-colored-star-field && pnpm install",
+    "clean": "rm -rf node_modules multi-colored-star-field/node_modules .pids",
+    "lint": "cd multi-colored-star-field && pnpm run lint",
+    "type-check": "cd multi-colored-star-field && pnpm run type-check"
+  },
+  "workspaces": [
+    "multi-colored-star-field"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TomMcAvoy/browser-graphics-programming.git"
+  },
+  "keywords": [
+    "graphics",
+    "webgl",
+    "canvas",
+    "animation",
+    "browser",
+    "javascript",
+    "typescript",
+    "nextjs",
+    "react"
+  ],
+  "author": "Tom McAvoy",
+  "license": "MIT",
+  "packageManager": "pnpm@10.5.2",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.9"
+  }
+}
